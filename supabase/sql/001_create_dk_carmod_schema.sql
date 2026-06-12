@@ -1,0 +1,200 @@
+-- DK Car Modification - Complete Database Schema
+-- Run this SQL in your Supabase SQL Editor to create all tables
+
+-- ============================================================================
+-- CREATE SERVICE CATEGORIES TABLE
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.service_categories (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL UNIQUE,
+  description text,
+  icon text,
+  order_index integer DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.service_categories ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service categories are viewable by everyone"
+  ON public.service_categories FOR SELECT
+  USING (true);
+
+-- ============================================================================
+-- CREATE SERVICES TABLE
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.services (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  description text NOT NULL,
+  long_description text,
+  category_id uuid REFERENCES public.service_categories(id) ON DELETE SET NULL,
+  image_url text,
+  price_range text,
+  duration_hours integer,
+  is_featured boolean DEFAULT false,
+  order_index integer DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Services are viewable by everyone"
+  ON public.services FOR SELECT
+  USING (true);
+
+-- ============================================================================
+-- CREATE TESTIMONIALS TABLE
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.testimonials (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  author_name text NOT NULL,
+  author_title text,
+  author_image text,
+  content text NOT NULL,
+  rating integer CHECK (rating >= 1 AND rating <= 5),
+  service_id uuid REFERENCES public.services(id) ON DELETE SET NULL,
+  is_featured boolean DEFAULT false,
+  is_published boolean DEFAULT false,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Published testimonials are viewable by everyone"
+  ON public.testimonials FOR SELECT
+  USING (is_published = true);
+
+-- ============================================================================
+-- CREATE BOOKINGS TABLE
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.bookings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_name text NOT NULL,
+  customer_email text NOT NULL,
+  customer_phone text,
+  service_id uuid REFERENCES public.services(id) ON DELETE SET NULL,
+  service_name text NOT NULL,
+  booking_date date NOT NULL,
+  booking_time time,
+  vehicle_description text,
+  special_requests text,
+  status text DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
+  notes text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role can manage bookings"
+  ON public.bookings FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can create bookings"
+  ON public.bookings FOR INSERT
+  WITH CHECK (true);
+
+-- ============================================================================
+-- CREATE CONTACT SUBMISSIONS TABLE
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.contact_submissions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  email text NOT NULL,
+  phone text,
+  subject text,
+  message text NOT NULL,
+  service_interest text,
+  status text DEFAULT 'new' CHECK (status IN ('new', 'read', 'replied', 'closed')),
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role can manage contact submissions"
+  ON public.contact_submissions FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can create contact submissions"
+  ON public.contact_submissions FOR INSERT
+  WITH CHECK (true);
+
+-- ============================================================================
+-- CREATE INDEXES FOR PERFORMANCE
+-- ============================================================================
+CREATE INDEX IF NOT EXISTS idx_services_category_id ON public.services(category_id);
+CREATE INDEX IF NOT EXISTS idx_services_is_featured ON public.services(is_featured);
+CREATE INDEX IF NOT EXISTS idx_testimonials_is_published ON public.testimonials(is_published);
+CREATE INDEX IF NOT EXISTS idx_testimonials_service_id ON public.testimonials(service_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_customer_email ON public.bookings(customer_email);
+CREATE INDEX IF NOT EXISTS idx_bookings_status ON public.bookings(status);
+CREATE INDEX IF NOT EXISTS idx_bookings_booking_date ON public.bookings(booking_date);
+CREATE INDEX IF NOT EXISTS idx_contact_status ON public.contact_submissions(status);
+CREATE INDEX IF NOT EXISTS idx_contact_created_at ON public.contact_submissions(created_at);
+
+-- ============================================================================
+-- INSERT DEFAULT SERVICE CATEGORIES
+-- ============================================================================
+INSERT INTO public.service_categories (name, description, icon, order_index) VALUES
+  ('Detailing', 'Professional vehicle detailing services', '✨', 1),
+  ('Performance', 'Engine and performance upgrades', '⚡', 2),
+  ('Repairs', 'General and specialized repairs', '🔧', 3),
+  ('Customization', 'Custom modifications and styling', '🎨', 4),
+  ('Maintenance', 'Regular maintenance and care', '🛡️', 5)
+ON CONFLICT (name) DO NOTHING;
+
+-- ============================================================================
+-- INSERT SAMPLE SERVICES (Optional - for testing)
+-- ============================================================================
+INSERT INTO public.services (name, description, category_id, image_url, price_range, duration_hours, is_featured, order_index)
+SELECT
+  'Exterior Detailing',
+  'Professional exterior detailing with ceramic coating and paint protection film for a showroom finish that lasts.',
+  (SELECT id FROM public.service_categories WHERE name = 'Detailing'),
+  'https://images.pexels.com/photos/3587620/pexels-photo-3587620.jpeg?auto=compress&cs=tinysrgb&w=600',
+  '$200 - $500',
+  4,
+  true,
+  1
+WHERE NOT EXISTS (SELECT 1 FROM public.services WHERE name = 'Exterior Detailing');
+
+INSERT INTO public.services (name, description, category_id, image_url, price_range, duration_hours, is_featured, order_index)
+SELECT
+  'Interior Detailing',
+  'Deep cleaning and restoration of your vehicle interior for maximum comfort and protection.',
+  (SELECT id FROM public.service_categories WHERE name = 'Detailing'),
+  'https://images.pexels.com/photos/3625517/pexels-photo-3625517.jpeg?auto=compress&cs=tinysrgb&w=600',
+  '$150 - $400',
+  3,
+  true,
+  2
+WHERE NOT EXISTS (SELECT 1 FROM public.services WHERE name = 'Interior Detailing');
+
+INSERT INTO public.services (name, description, category_id, image_url, price_range, duration_hours, is_featured, order_index)
+SELECT
+  'Paint Correction',
+  'Advanced paint correction and polishing to remove swirls, scratches, and imperfections.',
+  (SELECT id FROM public.service_categories WHERE name = 'Detailing'),
+  'https://images.pexels.com/photos/3625600/pexels-photo-3625600.jpeg?auto=compress&cs=tinysrgb&w=600',
+  '$300 - $800',
+  6,
+  true,
+  3
+WHERE NOT EXISTS (SELECT 1 FROM public.services WHERE name = 'Paint Correction');
+
+-- ============================================================================
+-- SUCCESS MESSAGE
+-- ============================================================================
+-- All tables created successfully!
+-- Tables: service_categories, services, testimonials, bookings, contact_submissions
+-- RLS Policies: Configured for security
+-- Indexes: Created for performance
+-- Sample Data: Inserted

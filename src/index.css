@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background-color: #0f172a;
+  color: #ffffff;
+  line-height: 1.6;
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 sm:px-6 py-3 bg-amber-400 text-slate-900 font-bold rounded hover:bg-amber-500 active:scale-95 transition-all duration-300 text-sm sm:text-base touch-manipulation;
+  }
+
+  .btn-secondary {
+    @apply px-4 sm:px-6 py-3 border-2 border-amber-400 text-amber-400 font-bold rounded hover:bg-amber-400 hover:text-slate-900 active:scale-95 transition-all duration-300 text-sm sm:text-base touch-manipulation;
+  }
+
+  .section-title {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight;
+  }
+
+  .section-subtitle {
+    @apply text-gray-300 text-base sm:text-lg mb-8 px-2 sm:px-0;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent;
+  }
+
+  .responsive-grid-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8;
+  }
+
+  .responsive-grid-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8;
+  }
+
+  .responsive-grid-4 {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8;
+  }
+
+  .card-base {
+    @apply bg-slate-800/50 border border-amber-400/20 rounded-lg p-4 sm:p-6 backdrop-blur-sm;
+  }
+
+  .touch-target {
+    @apply p-3 sm:p-4 min-h-[44px] flex items-center;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f59e0b;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d97706;
+}
+
+/* Mobile-first approach */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+
+  section {
+    padding: 2rem 1rem;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  section {
+    padding: 3rem 1.5rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a[role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  button:active,
+  a[role="button"]:active {
+    opacity: 0.8;
+  }
+}
+
+/* Dark mode is default, no toggle needed */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
