@@ -233,7 +233,7 @@ export default function Contact() {
                     whileTap={{ scale: 0.95 }}
                     type="submit"
                     disabled={loading}
-                    className="w-full btn-primary font-bold py-3 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full btn-primary font-bold py-3 flex items-center justify-center gap-2 rounded-3xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <>

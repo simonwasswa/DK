@@ -220,7 +220,7 @@ export default function About() {
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Experience the DK Difference</h2>
               <p className="text-lg text-gray-300 mb-8">Join thousands of satisfied customers and transform your vehicle today</p>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <button className="btn-primary text-lg font-bold">GET IN TOUCH</button>
+                <button className="btn-primary text-lg font-bold rounded-3xl">GET IN TOUCH</button>
               </motion.div>
             </motion.div>
           </div>

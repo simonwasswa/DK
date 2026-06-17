@@ -63,7 +63,7 @@ export default function Header() {
           >
             <Link
               to="/contact"
-              className="btn-primary text-xs xl:text-sm font-bold px-3 xl:px-6"
+              className="btn-primary text-xs xl:text-sm font-bold px-3 xl:px-6 rounded-3xl"
             >
               BOOK NOW
             </Link>
@@ -74,7 +74,7 @@ export default function Header() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={toggleMenu}
-            className="lg:hidden text-amber-400 p-2 min-h-12 min-w-12 flex items-center justify-center"
+            className="lg:hidden text-amber-400 p-2  rounded-3xl min-h-12 min-w-12 flex items-center justify-center"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </motion.button>

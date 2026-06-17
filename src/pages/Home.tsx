@@ -103,11 +103,11 @@ export default function Home() {
               >
                 <button
                   onClick={() => openBooking('Service')}
-                  className="btn-primary text-base sm:text-lg font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-amber-400/50"
+                  className="btn-primary text-base sm:text-lg rounded-3xl font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-amber-400/50"
                 >
                   BOOK APPOINTMENT <ArrowRight size={18} />
                 </button>
-                <Link to="/services" className="btn-secondary text-base sm:text-lg font-bold flex items-center justify-center gap-2">
+                <Link to="/services" className="btn-secondary text-base sm:text-lg rounded-3xl font-bold flex items-center justify-center gap-2">
                   EXPLORE SERVICES
                 </Link>
               </motion.div>
@@ -175,7 +175,7 @@ export default function Home() {
                 <Loader size={40} className="animate-spin text-amber-400" />
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-8">
                 {services.map((service, index) => (
                   <ServiceCard
                     key={service.id}
@@ -190,7 +190,7 @@ export default function Home() {
             )}
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-center mt-12">
-              <Link to="/services" className="btn-primary inline-flex items-center gap-2 text-lg">
+              <Link to="/services" className="btn-primary inline-flex items-center gap-2  rounded-3xl text-lg">
                 VIEW ALL SERVICES <ArrowRight size={20} />
               </Link>
             </motion.div>
@@ -218,7 +218,9 @@ export default function Home() {
                 <h2 className="section-title mb-6">Car Modification & Repair Services You Can Rely On</h2>
                 <p className="text-gray-300 mb-6 leading-relaxed">With over 15 years of experience in the automotive industry, DK Car Modification has become a trusted name for premium car modifications and repair services.</p>
                 <p className="text-gray-300 mb-8 leading-relaxed">We're committed to excellence and customer satisfaction. From performance tuning to aesthetic enhancements, every project receives our full attention and expertise.</p>
-                <Link to="/about" className="btn-secondary inline-flex items-center gap-2">LEARN MORE <ArrowRight size={20} /></Link>
+                <Link to="/about" className="btn-secondary inline-flex items-center gap-2 rounded-3xl">
+                  LEARN MORE <ArrowRight size={20} />
+                </Link>
               </motion.div>
             </div>
           </div>
@@ -272,7 +274,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Ready to Transform Your Vehicle?</h2>
               <p className="text-lg text-gray-300 mb-8">Get in touch with our expert team today for a free consultation.</p>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link to="/contact" className="btn-primary inline-flex items-center gap-2 text-lg">
+                <Link to="/contact" className="btn-primary inline-flex items-center gap-2 text-lg rounded-3xl">
                   <Phone size={20} /> CONTACT US NOW
                 </Link>
               </motion.div>

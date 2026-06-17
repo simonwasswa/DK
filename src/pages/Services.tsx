@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
-import { Zap, Shield, Wrench, Settings, AlertCircle, Gauge, Loader } from 'lucide-react';
+import { Zap, Shield, Wrench, Settings, AlertCircle, Gauge, Loader, Car } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { PiGarageFill } from "react-icons/pi";
+import { BiSolidCarGarage } from "react-icons/bi";
 import ServiceCard from '../components/ServiceCard';
 import FAQItem from '../components/FAQItem';
 import AnimatedBackground from '../components/AnimatedBackground';
@@ -8,9 +10,9 @@ import BookingModal from '../components/BookingModal';
 import { useAPI } from '../hooks/useAPI';
 
 const iconMap: Record<string, JSX.Element> = {
-  'Exterior Detailing': <Zap size={24} />,
-  'Interior Detailing': <Shield size={24} />,
-  'Paint Correction': <Zap size={24} />,
+  'Exterior Detailing': <PiGarageFill size={24} />,
+  'Interior Detailing': <BiSolidCarGarage size={24} />,
+  'Paint Correction': <Car size={24} />,
   'Engine Diagnostics': <Shield size={24} />,
   'Electrical Repairs': <Wrench size={24} />,
   'Suspension & Brakes': <Gauge size={24} />,
@@ -162,7 +164,7 @@ export default function Services() {
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Ready to Get Started?</h2>
               <p className="text-lg text-gray-300 mb-8">Contact our team today for a free consultation and competitive quote</p>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <button onClick={() => openBooking('Service', '')} className="btn-primary inline-flex items-center gap-2 text-lg">
+                <button onClick={() => openBooking('Service', '')} className="btn-primary inline-flex items-center gap-2 text-lg rounded-3xl">
                   SCHEDULE A CONSULTATION
                 </button>
               </motion.div>

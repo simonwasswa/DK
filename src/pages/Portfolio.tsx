@@ -151,7 +151,7 @@ export default function Portfolio() {
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Ready to Transform Your Vehicle?</h2>
               <p className="text-lg text-gray-300 mb-8">Let our experts create your perfect automotive vision</p>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <button className="btn-primary text-lg font-bold">START YOUR PROJECT</button>
+                <button className="btn-primary text-lg font-bold rounded-3xl">START YOUR PROJECT</button>
               </motion.div>
             </motion.div>
           </div>

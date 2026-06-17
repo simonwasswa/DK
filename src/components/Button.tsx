@@ -10,7 +10,7 @@ interface ButtonProps {
 }
 
 export default function Button({ children, variant = 'primary', onClick, href, className = '' }: ButtonProps) {
-  const baseClasses = 'font-bold py-3 px-6 rounded transition-all duration-300 cursor-pointer';
+  const baseClasses = 'font-bold py-3 px-6 rounded-3xl transition-all duration-300 cursor-pointer';
 
   const variants = {
     primary: 'bg-amber-400 text-slate-900 hover:bg-amber-500',

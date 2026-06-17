@@ -17,7 +17,7 @@ export default function ServiceCard({ icon, title, description, image, priceRang
       whileInView={{ y: 0, opacity: 1 }}
       whileHover={{ y: -10 }}
       transition={{ duration: 0.5 }}
-      className="group bg-slate-800/50 border border-amber-400/20 hover:border-amber-400/50 rounded-lg overflow-hidden backdrop-blur-sm flex flex-col"
+      className="group bg-slate-800/50 border border-amber-400/20 hover:border-amber-400/50 rounded-2xl overflow-hidden backdrop-blur-sm flex flex-col"
     >
       <div className="relative h-56 overflow-hidden">
         <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -41,12 +41,12 @@ export default function ServiceCard({ icon, title, description, image, priceRang
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={onBook}
-            className="w-full btn-primary text-sm py-2 flex items-center justify-center gap-2"
+            className="w-full btn-primary text-sm py-2 rounded-3xl flex items-center justify-center gap-2"
           >
             BOOK NOW <ArrowRight size={16} />
           </motion.button>
         ) : (
-          <motion.div whileHover={{ x: 5 }} className="flex items-center gap-2 text-amber-400 font-semibold text-sm cursor-pointer">
+          <motion.div whileHover={{ x: 5 }} className="flex items-center gap-2 rounded-3xl text-amber-400 font-semibold text-sm cursor-pointer">
             Read More <ArrowRight size={16} />
           </motion.div>
         )}
