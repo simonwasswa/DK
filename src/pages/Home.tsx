@@ -154,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* Services Section — live from Supabase */}
-      <section className="py-20 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className="py-10 md:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <AnimatedBackground
           images={[
             'https://images.pexels.com/photos/3625610/pexels-photo-3625610.jpeg?auto=compress&cs=tinysrgb&w=1200',
@@ -199,7 +199,7 @@ export default function Home() {
       </section>
 
       {/* About Preview */}
-      <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="relative py-10 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground
           images={[
             'https://images.pexels.com/photos/3803517/pexels-photo-3803517.jpeg?auto=compress&cs=tinysrgb&w=1200',
@@ -228,7 +228,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials — live from Supabase */}
-      <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="relative py-10 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground
           images={[
             'https://images.pexels.com/photos/3625629/pexels-photo-3625629.jpeg?auto=compress&cs=tinysrgb&w=1200',
@@ -260,7 +260,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden border-y border-amber-400/20">
+      <section className="relative py-10 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden border-y border-amber-400/20">
         <AnimatedBackground
           images={[
             'https://images.pexels.com/photos/3625600/pexels-photo-3625600.jpeg?auto=compress&cs=tinysrgb&w=1200',
