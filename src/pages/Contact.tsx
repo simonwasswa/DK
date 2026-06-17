@@ -57,8 +57,8 @@ export default function Contact() {
     {
       icon: <MapPin size={24} />,
       title: 'Address',
-      details: '123 Automotive Ave, Tech City, TC 12345',
-      link: '#',
+      details: 'DK Car Modifications Uganda, Kampala, Uganda',
+      link: 'https://www.google.com/maps/place/DK+CAR+MODIFICATIONS+UGANDA/@0.3713548,32.7347697,17z/data=!3m1!4b1!4m6!3m5!1s0x177dc78c48d3fbfb:0x399afcad9497fd2e!8m2!3d0.3713548!4d32.7347697!16s%2Fg%2F11xc_nt3dw?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D',
     },
     {
       icon: <Clock size={24} />,
@@ -70,8 +70,8 @@ export default function Contact() {
 
   return (
     <div className="bg-slate-900">
-      {/* Hero Section with Animated Background */}
-      <section className="relative py-24  sm:px-6 lg:px-9 overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative py-24 sm:px-6 lg:px-9 overflow-hidden">
         <AnimatedBackground
           images={[
             'https://images.pexels.com/photos/3625517/pexels-photo-3625517.jpeg?auto=compress&cs=tinysrgb&w=1200',
@@ -97,7 +97,7 @@ export default function Contact() {
         </AnimatedBackground>
       </section>
 
-      {/* Contact Info Cards with Animated Background */}
+      {/* Contact Info Cards */}
       <section className="relative py-16 md:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground
           images={[
@@ -113,6 +113,8 @@ export default function Contact() {
                 <motion.a
                   key={index}
                   href={info.link}
+                  target={info.link.startsWith('http') ? '_blank' : undefined}
+                  rel={info.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
@@ -134,7 +136,7 @@ export default function Contact() {
         </AnimatedBackground>
       </section>
 
-      {/* Contact Form Section with Animated Background */}
+      {/* Contact Form Section */}
       <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground
           images={[
@@ -325,7 +327,7 @@ export default function Contact() {
         </AnimatedBackground>
       </section>
 
-      {/* Map Section with Animated Background */}
+      {/* Map Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground
           images={[
@@ -339,19 +341,49 @@ export default function Contact() {
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
+              className="text-center mb-10"
+            >
+              <span className="text-amber-400 font-bold tracking-widest text-sm">FIND US</span>
+              <h2 className="section-title">Our <span className="gradient-text">Location</span></h2>
+              <p className="section-subtitle">Come visit us at our facility in Uganda</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="bg-slate-800/50 border border-amber-400/20 rounded-lg overflow-hidden h-96"
+              className="bg-slate-800/50 border border-amber-400/20 rounded-xl overflow-hidden shadow-2xl shadow-amber-400/10"
+              style={{ height: '450px' }}
             >
               <iframe
-                title="Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3587.8919522227557!2d-122.40522392343055!3d37.78995807179881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085817c6b3a0001%3A0x1234567890abcdef!2s123%20Automotive%20Ave%2C%20San%20Francisco!5e0!3m2!1sen!2sus!4v1234567890"
+                title="DK Car Modifications Uganda"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7453!2d32.7347697!3d0.3713548!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x177dc78c48d3fbfb%3A0x399afcad9497fd2e!2sDK%20CAR%20MODIFICATIONS%20UGANDA!5e0!3m2!1sen!2sug!4v1"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-center mt-6"
+            >
+              <a
+                href="https://www.google.com/maps/place/DK+CAR+MODIFICATIONS+UGANDA/@0.3713548,32.7347697,17z/data=!3m1!4b1!4m6!3m5!1s0x177dc78c48d3fbfb:0x399afcad9497fd2e!8m2!3d0.3713548!4d32.7347697!16s%2Fg%2F11xc_nt3dw?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 btn-primary rounded-3xl font-bold"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Get Directions on Google Maps
+              </a>
             </motion.div>
           </div>
         </AnimatedBackground>

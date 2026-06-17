@@ -1,15 +1,48 @@
 import { motion } from 'framer-motion';
-import { Users, Award, Zap, Heart, Loader } from 'lucide-react';
+import { Users, Award, Zap, Heart, Loader, Play } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { useAPI } from '../hooks/useAPI';
+import { supabase } from '../lib/supabase';
 
 export default function About() {
   const [team, setTeam] = useState<any[]>([]);
-  const { getTeamMembers, loading } = useAPI();
+  const [storyVideo, setStoryVideo] = useState<any>(null);
+  const [videoLoading, setVideoLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { getTeamMembers, getStoryVideo, loading } = useAPI();
 
   useEffect(() => {
+    // Initial data fetch
     getTeamMembers().then(setTeam);
+    getStoryVideo().then((video) => {
+      setStoryVideo(video);
+      setVideoLoading(false);
+    });
+
+    // Real-time subscription on videos table
+    const channel = supabase
+  .channel('about-content-realtime')
+  .on(
+    'postgres_changes',
+    {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'about_content',
+      filter: 'section=eq.story',
+    },
+    async () => {
+      const updated = await getStoryVideo();
+      setStoryVideo(updated);
+      setIsPlaying(false); // reset player on video change
+    }
+  )
+  .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const stats = [
@@ -26,6 +59,9 @@ export default function About() {
     { icon: <Users size={32} />, title: 'Trust', description: 'Building lasting relationships based on honesty and integrity' },
   ];
 
+  const isEmbedUrl = (url: string) =>
+    url?.includes('youtube.com/embed') || url?.includes('player.vimeo.com');
+
   return (
     <div className="bg-slate-900">
       {/* Hero */}
@@ -40,8 +76,12 @@ export default function About() {
         >
           <div className="max-w-7xl mx-auto text-center relative z-20">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <h1 className="text-5xl md:text-6xl font-black text-white mb-6">About <span className="gradient-text">DK Car Modification</span></h1>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">Transforming vehicles and exceeding expectations since 2009</p>
+              <h1 className="text-5xl md:text-6xl font-black text-white mb-6">
+                About <span className="gradient-text">DK Car Modification</span>
+              </h1>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Transforming vehicles and exceeding expectations since 2009
+              </p>
             </motion.div>
           </div>
         </AnimatedBackground>
@@ -70,7 +110,7 @@ export default function About() {
         </AnimatedBackground>
       </section>
 
-      {/* Story */}
+      {/* Story — real-time video */}
       <section className="relative py-20 md:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <AnimatedBackground
           images={[
@@ -82,14 +122,79 @@ export default function About() {
         >
           <div className="max-w-7xl mx-auto relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+              {/* Video Player */}
               <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-                <img src="https://images.pexels.com/photos/3625517/pexels-photo-3625517.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Our Facility" className="rounded-lg shadow-2xl shadow-amber-400/20 object-cover h-96 w-full" />
+                {videoLoading ? (
+                  <div className="flex items-center justify-center h-96 rounded-lg bg-slate-800/50 border border-amber-400/20">
+                    <Loader size={40} className="animate-spin text-amber-400" />
+                  </div>
+                ) : storyVideo ? (
+                  <div className="relative rounded-lg overflow-hidden shadow-2xl shadow-amber-400/20 h-96 bg-black">
+                    {isEmbedUrl(storyVideo.url) ? (
+                      <iframe
+                        src={`${storyVideo.url}?autoplay=0&rel=0&modestbranding=1`}
+                        title={storyVideo.title}
+                        className="w-full h-full"
+                        style={{ border: 0 }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : isPlaying ? (
+                      <video
+                        src={storyVideo.url}
+                        className="w-full h-full object-cover"
+                        controls
+                        autoPlay
+                        poster={storyVideo.thumbnail_url}
+                      />
+                    ) : (
+                      <div className="relative w-full h-full cursor-pointer group" onClick={() => setIsPlaying(true)}>
+                        <img
+                          src={storyVideo.thumbnail_url || 'https://images.pexels.com/photos/3625517/pexels-photo-3625517.jpeg?auto=compress&cs=tinysrgb&w=600'}
+                          alt={storyVideo.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                          <motion.div
+                            whileHover={{ scale: 1.15 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex items-center justify-center w-20 h-20 rounded-full bg-amber-400 text-slate-900 shadow-xl shadow-amber-400/40"
+                          >
+                            <Play size={32} fill="currentColor" />
+                          </motion.div>
+                        </div>
+                        {storyVideo.description && (
+                          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                            <p className="text-white text-sm font-medium">{storyVideo.description}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Fallback: no video in DB yet — shows a waiting indicator */
+                  <div className="flex flex-col items-center justify-center h-96 rounded-lg bg-slate-800/50 border border-dashed border-amber-400/40 gap-4">
+                    <Play size={48} className="text-amber-400/50" />
+                    <p className="text-gray-400 text-sm text-center px-6">
+                      Video will appear here once uploaded to the database
+                    </p>
+                  </div>
+                )}
               </motion.div>
+
+              {/* Story Text */}
               <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
                 <h2 className="section-title mb-6">Our Story</h2>
-                <p className="text-gray-300 mb-4 leading-relaxed">DK Car Modification was founded in 2009 with a simple vision: to provide world-class automotive modification and detailing services. What started as a small garage has grown into a premier automotive destination, trusted by thousands of car enthusiasts.</p>
-                <p className="text-gray-300 mb-4 leading-relaxed">Our founder, David Kim, brought his passion for automobiles and meticulous attention to detail to create a company that stands apart.</p>
-                <p className="text-gray-300 leading-relaxed">Today, we're proud to have transformed over 5,000 vehicles and maintained a 98% customer satisfaction rate.</p>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  DK Car Modification was founded in 2009 with a simple vision: to provide world-class automotive modification and detailing services. What started as a small garage has grown into a premier automotive destination, trusted by thousands of car enthusiasts.
+                </p>
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  Our founder brought his passion for automobiles and meticulous attention to detail to create a company that stands apart.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  Today, we're proud to have transformed over 5,000 vehicles and maintained a 98% customer satisfaction rate.
+                </p>
               </motion.div>
             </div>
           </div>
@@ -194,7 +299,9 @@ export default function About() {
                 <motion.div key={index} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: (index % 2) * 0.2 }} className="flex items-start gap-4">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-center h-6 w-6 rounded-md bg-amber-400 text-slate-900">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
                     </div>
                   </div>
                   <p className="text-gray-300">{reason}</p>
