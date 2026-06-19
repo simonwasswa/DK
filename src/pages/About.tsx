@@ -14,11 +14,16 @@ export default function About() {
 
   useEffect(() => {
     // Initial data fetch
-    getTeamMembers().then(setTeam);
-    getStoryVideo().then((video) => {
-      setStoryVideo(video);
-      setVideoLoading(false);
-    });
+    if (getTeamMembers) {
+      getTeamMembers().then(setTeam);
+    }
+    // guard in case getStoryVideo is undefined
+    if (getStoryVideo) {
+      getStoryVideo().then((video) => {
+        setStoryVideo(video);
+        setVideoLoading(false);
+      });
+    }
 
     // Real-time subscription on videos table
     const channel = supabase
@@ -32,6 +37,7 @@ export default function About() {
       filter: 'section=eq.story',
     },
     async () => {
+      if (!getStoryVideo) return;
       const updated = await getStoryVideo();
       setStoryVideo(updated);
       setIsPlaying(false); // reset player on video change
@@ -336,3 +342,7 @@ export default function About() {
     </div>
   );
 }
+
+// function getStats(_updated: void) {
+//   throw new Error('Function not implemented.');
+// }

@@ -49,7 +49,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-slate-900 mt-[-50px]">
+    <div className="bg-white dark:bg-slate-900 mt-[-50px] transition-colors duration-300">
       <BookingModal
         isOpen={bookingModal.isOpen}
         onClose={closeBooking}
@@ -113,44 +113,32 @@ export default function Home() {
               </motion.div>
             </motion.div>
           </div>
-          
-            <div className="w-6 h-10  justify-center p-2">
-              
-            </div>
-        
+
+          <div className="w-6 h-10  justify-center p-2"></div>
         </AnimatedBackground>
       </section>
 
-      {/* Features Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden h-auto  mt-[-50px]">
-        <AnimatedBackground
-          images={[
-            'https://i.pinimg.com/736x/7a/83/60/7a836086ac64a68e54c6ddf6142adee1.jpg',
-            'https://i.pinimg.com/originals/db/82/3d/db823dbff6c5a1be6035b7714a74c322.gif',
-          ]}
-          duration={20}
-          overlayOpacity={1.5}
-        >
-          <div className="max-w-7xl mx-auto relative z-20">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.2 }}
-                  className="text-center"
-                >
-                  <motion.div whileHover={{ scale: 1.1, rotate: 10 }} className="inline-block text-amber-400 mb-4 p-4 bg-amber-400/10 rounded-lg">
-                    {feature.icon}
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                  <p className="text-gray-400">{feature.description}</p>
+      {/* Features Section — plain background, theme aware */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden h-auto mt-[-50px] bg-white dark:bg-slate-900 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: index * 0.2 }}
+                className="text-center"
+              >
+                <motion.div whileHover={{ scale: 1.1, rotate: 10 }} className="inline-block text-amber-500 dark:text-amber-400 mb-4 p-4 bg-amber-400/10 rounded-lg">
+                  {feature.icon}
                 </motion.div>
-              ))}
-            </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{feature.title}</h3>
+                <p className="text-slate-500 dark:text-gray-400">{feature.description}</p>
+              </motion.div>
+            ))}
           </div>
-        </AnimatedBackground>
+        </div>
       </section>
 
       {/* Services Section — live from Supabase */}
@@ -176,7 +164,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-8">
-                {services.map((service, index) => (
+                {services.map((service) => (
                   <ServiceCard
                     key={service.id}
                     icon={<Zap size={24} />}
@@ -244,7 +232,7 @@ export default function Home() {
               <p className="section-subtitle">Trusted by automotive enthusiasts across the region</p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {testimonials.map((t, index) => (
+              {testimonials.map((t) => (
                 <TestimonialCard
                   key={t.id}
                   name={t.author_name}

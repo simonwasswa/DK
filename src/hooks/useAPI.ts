@@ -118,6 +118,8 @@ export const useAPI = () => {
     }
   };
 
+
+
   const getTeamMembers = async () => {
     setLoading(true);
     setError(null);
@@ -222,6 +224,25 @@ export const useAPI = () => {
     }
   };
 
+const getSocialLinks = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const { data, error: fetchError } = await supabase
+      .from('social_links')
+      .select('platform, url')
+      .eq('is_published', true)
+      .order('order_index', { ascending: true });
+    if (fetchError) throw fetchError;
+    return data || [];
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'An error occurred');
+    return [];
+  } finally {
+    setLoading(false);
+  }
+};
+
   return {
     loading,
     error,
@@ -234,5 +255,6 @@ export const useAPI = () => {
     getTeamMembers,
     getStoryVideo,
     getAboutContent,
+    getSocialLinks,
   };
 };

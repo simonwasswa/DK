@@ -1,8 +1,54 @@
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Wrench } from 'lucide-react';
+import { Facebook, Wrench } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { useAPI } from '../hooks/useAPI';
+import { supabase } from '../lib/supabase';
+
+// Simple inline TikTok icon since lucide-react doesn't have one
+function TikTokIcon({ size = 18 }: { size?: number | string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z" />
+    </svg>
+  );
+}
+
+const iconMap: Record<string, React.ComponentType<{ size?: number | string }>> = {
+  facebook: Facebook,
+  tiktok: TikTokIcon,
+};
 
 export default function Footer() {
+  const [socialLinks, setSocialLinks] = useState<{ platform: string; url: string }[]>([]);
+  const { getSocialLinks } = useAPI();
+
+  useEffect(() => {
+    getSocialLinks().then(setSocialLinks);
+
+    const channel = supabase
+      .channel('social-links-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'social_links' },
+        async () => {
+          const updated = await getSocialLinks();
+          setSocialLinks(updated);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   const footerSections = [
     {
       title: 'Quick Links',
@@ -27,16 +73,10 @@ export default function Footer() {
       links: [
         { label: '+256 759 082 109', href: 'tel:+256759082109' },
         { label: '+256 785 598 590', href: 'tel:+256785598590' },
-        { label: 'info@dkcarmod.com', href: 'mailto:info@dkcarmod.com' },
+        { label: 'www.dkcarmod.com', href: 'https://www.dkcarmod.com' },
         { label: 'Support Available 24/7', href: '#' },
       ],
     },
-  ];
-
-  const socialLinks = [
-    { icon: Facebook, href: '#' },
-    { icon: Twitter, href: '#' },
-    { icon: Instagram, href: '#' },
   ];
 
   return (
@@ -44,7 +84,7 @@ export default function Footer() {
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="bg-slate-950 border-t border-amber-400/20"
+      className="bg-slate-100 dark:bg-slate-950 border-t border-amber-400/20 transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
@@ -56,27 +96,30 @@ export default function Footer() {
             transition={{ duration: 0.5 }}
           >
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="text-amber-400">
+              <div className="text-amber-500 dark:text-amber-400">
                 <Wrench size={28} />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white">DK</h3>
-                <p className="text-xs text-amber-400 font-bold">CAR MOD</p>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">DK</h3>
+                <p className="text-xs text-amber-500 dark:text-amber-400 font-bold">CAR MOD</p>
               </div>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+            <p className="text-slate-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
               Premium car modification and detailing services for automotive enthusiasts.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => {
-                const Icon = social.icon;
+                const Icon = iconMap[social.platform.toLowerCase()];
+                if (!Icon) return null;
                 return (
                   <motion.a
                     key={index}
-                    href={social.href}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, rotate: 10 }}
                     whileTap={{ scale: 0.9 }}
-                    className="w-10 h-10 bg-amber-400/10 hover:bg-amber-400 text-amber-400 hover:text-slate-900 rounded-full flex items-center justify-center transition-colors duration-300"
+                    className="w-10 h-10 bg-amber-400/10 hover:bg-amber-400 text-amber-500 dark:text-amber-400 hover:text-slate-900 rounded-full flex items-center justify-center transition-colors duration-300"
                   >
                     <Icon size={18} />
                   </motion.a>
@@ -93,7 +136,7 @@ export default function Footer() {
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: sectionIndex * 0.1 }}
             >
-              <h4 className="text-white font-bold mb-4 text-sm tracking-wide">
+              <h4 className="text-slate-900 dark:text-white font-bold mb-4 text-sm tracking-wide">
                 {section.title}
               </h4>
               <ul className="space-y-3">
@@ -101,7 +144,7 @@ export default function Footer() {
                   <li key={linkIndex}>
                     <Link
                       to={link.href}
-                      className="text-gray-400 hover:text-amber-400 text-sm transition-colors duration-300"
+                      className="text-slate-600 dark:text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 text-sm transition-colors duration-300"
                     >
                       {link.label}
                     </Link>
@@ -122,14 +165,14 @@ export default function Footer() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="py-8 flex flex-col md:flex-row justify-between items-center gap-4"
         >
-          <p className="text-gray-500 text-sm">
+          <p className="text-slate-500 dark:text-gray-500 text-sm">
             © 2026 DK Car Modification. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-gray-500 hover:text-amber-400 text-sm transition-colors">
+            <a href="#" className="text-slate-500 dark:text-gray-500 hover:text-amber-500 dark:hover:text-amber-400 text-sm transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="text-gray-500 hover:text-amber-400 text-sm transition-colors">
+            <a href="#" className="text-slate-500 dark:text-gray-500 hover:text-amber-500 dark:hover:text-amber-400 text-sm transition-colors">
               Terms of Service
             </a>
           </div>
